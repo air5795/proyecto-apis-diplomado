@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -9,6 +10,13 @@ import taskRoutes from './routes/task.route.js'
 const app = express();
 
 // Swagger configuration
+const getServerUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.API_URL || 'https://tu-api.onrender.com';
+  }
+  return 'http://localhost:3000';
+};
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -19,8 +27,8 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Servidor de desarrollo',
+        url: getServerUrl(),
+        description: process.env.NODE_ENV === 'production' ? 'Servidor de producción' : 'Servidor de desarrollo',
       },
     ],
     components: {
@@ -44,6 +52,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middlewares
+app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json());
 
