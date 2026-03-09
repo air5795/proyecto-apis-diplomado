@@ -9,6 +9,9 @@ import taskRoutes from './routes/task.route.js'
 
 const app = express();
 
+// Trust reverse proxy (Render, Heroku, etc.) so req.protocol returns 'https' correctly
+app.set('trust proxy', 1);
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
