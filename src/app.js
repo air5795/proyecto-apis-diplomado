@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
       min-height: 100vh;
     }
     .card {
-      background: #1e293b;
+      background: #15203b;
       border: 1px solid #334155;
       border-radius: 16px;
       padding: 48px 56px;
@@ -154,9 +154,10 @@ app.get('/', (req, res) => {
 </head>
 <body>
   <div class="card">
-    <span class="badge">Proyecto API</span>
+    
     <h1>Alejandro Iglesias Raldes</h1>
     <p class="ci">CI: 10478330</p>
+    <p class="ci">Celular: 79441119</p>
     <hr class="divider"/>
     <p class="label">Modulo</p>
     <p class="project">MODULO IV - DESARROLLO BACKEND CON NODE.JS Y EXPRESS</p>
