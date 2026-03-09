@@ -9,14 +9,6 @@ import taskRoutes from './routes/task.route.js'
 
 const app = express();
 
-// Swagger configuration
-const getServerUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return process.env.API_URL || 'https://tu-api.onrender.com';
-  }
-  return 'http://localhost:3000';
-};
-
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -27,8 +19,8 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: getServerUrl(),
-        description: process.env.NODE_ENV === 'production' ? 'Servidor de producción' : 'Servidor de desarrollo',
+        url: '/',
+        description: 'API Server',
       },
     ],
     components: {
@@ -46,7 +38,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/routes/*.js', './src/controllers/*.js'], // Paths to files containing OpenAPI definitions
+  apis: ['./src/routes/*.js', './src/controllers/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -56,8 +48,15 @@ app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json());
 
-// Swagger route
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Swagger route - server URL is resolved dynamically from the request
+app.use('/api-docs', swaggerUi.serve, (req, res, next) => {
+  const serverUrl = `${req.protocol}://${req.get('host')}`;
+  const dynamicSpec = {
+    ...swaggerSpec,
+    servers: [{ url: serverUrl, description: 'API Server' }],
+  };
+  swaggerUi.setup(dynamicSpec)(req, res, next);
+});
 
 // Routes
 app.use('/api/users', usersRoutes);
